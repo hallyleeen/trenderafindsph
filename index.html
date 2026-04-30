@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trendéra - Affiliate Directory</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 50%, #a5d6a7 100%);
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --text-main: #2e4733;
+            --text-muted: #556b5c;
+            --accent-color: #4CAF50;
+            --btn-bg: #ffffff;
+            --btn-text: #2e4733;
+            --btn-border: #e8f5e9;
+            --btn-hover: #f1f8f3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 40px 32px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        /* Profile Section */
+        .profile-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 32px;
+            text-align: left;
+        }
+
+        .profile-img {
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-color);
+            padding: 2px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .profile-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        .bio {
+            font-size: 0.815rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+            max-width: 250px;
+        }
+
+        /* Buttons Section */
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .link-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--btn-bg);
+            color: var(--btn-text);
+            padding: 16px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            border: 1px solid var(--btn-border);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+            cursor: pointer;
+        }
+
+        .link-btn:hover {
+            background: var(--btn-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.15);
+        }
+
+        .link-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-icon {
+            font-size: 1.1rem;
+            color: var(--accent-color);
+            width: 20px;
+        }
+
+        .arrow {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            transition: transform 0.2s ease;
+        }
+
+        .link-btn:hover .arrow {
+            transform: translateX(4px);
+        }
+
+        /* View Section Manager */
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 16px;
+            text-align: left;
+            border-bottom: 1px solid rgba(76, 175, 80, 0.2);
+            padding-bottom: 4px;
+        }
+
+        /* Scrolling Grid Container */
+        .scrollable-grid {
+            max-height: 340px; /* Limits height, adds scrollbar if exceeded */
+            overflow-y: auto;  /* Adds vertical scroll functionality */
+            padding-right: 8px;
+            margin-bottom: 24px;
+        }
+
+        /* Custom Scrollbar */
+        .scrollable-grid::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .scrollable-grid::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 10px;
+        }
+
+        .scrollable-grid::-webkit-scrollbar-thumb {
+            background: rgba(76, 175, 80, 0.4);
+            border-radius: 10px;
+        }
+
+        .scrollable-grid::-webkit-scrollbar-thumb:hover {
+            background: rgba(76, 175, 80, 0.6);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .product-card {
+            background: var(--btn-bg);
+            border-radius: 12px;
+            border: 1px solid var(--btn-border);
+            overflow: hidden;
+            text-decoration: none;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        .product-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.15);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 90px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--btn-border);
+        }
+
+        /* Image Slider Container for Product */
+        .slider-container {
+            position: relative;
+            width: 100%;
+            height: 90px;
+            overflow: hidden;
+            border-bottom: 1px solid var(--btn-border);
+        }
+
+        .slider-container img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            animation: fadeAnimation 6s infinite;
+        }
+
+        .slider-container img:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .slider-container img:nth-child(2) {
+            animation-delay: 3s;
+        }
+
+        @keyframes fadeAnimation {
+            0%, 45% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        .product-info {
+            padding: 8px 4px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .product-title {
+            font-size: 0.7rem;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .product-price {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+
+        .footer-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .social-icon {
+            color: var(--text-muted);
+            font-size: 1.15rem;
+            transition: color 0.2s ease;
+        }
+
+        .social-icon:hover {
+            color: var(--accent-color);
+        }
+
+        footer {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+        }
+
+        @media (max-width: 420px) {
+            .profile-wrapper {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 16px;
+            }
+            .bio {
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="main-view" class="view-section active">
+            <div class="profile-wrapper">
+                <img src="trendera.png" alt="Profile Picture" class="profile-img">
+                <div class="profile-details">
+                    <h1 class="name">Trendéra</h1>
+                    <p class="bio">Curated fashion finds and home essentials. Tap below to shop my looks.</p>
+                </div>
+            </div>
+
+            <div class="section-title">Directory</div>
+            <div class="links">
+                <a href="https://bit.ly/42FER3O" class="link-btn" target="_blank" rel="noopener noreferrer">
+                    <div class="link-info">
+                        <i class="fa-solid fa-store brand-icon"></i>
+                        <span>Shop My Shopee Storefront</span>
+                    </div>
+                    <div class="arrow">&rarr;</div>
+                </a>
+
+                <div class="link-btn" onclick="showSheinView()">
+                    <div class="link-info">
+                        <i class="fa-solid fa-shirt brand-icon"></i>
+                        <span>Shop My SHEIN Hauls</span>
+                    </div>
+                    <div class="arrow">&rarr;</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="shein-view" class="view-section">
+            <div class="section-title">SHEIN Haul Directory</div>
+            
+            <div class="scrollable-grid">
+                <div class="products-grid">
+                    
+                    <a href="https://onelink.shein.com/5/5o2lydtzpf5s" class="product-card" target="_blank" rel="noopener noreferrer">
+                        <div class="slider-container">
+                            <img src="3e703d01-ba1c-487c-a631-92558ab418c5.jpg" alt="Spring Top Front View">
+                            <img src="a33042c9-8f21-448b-ba8e-ee8b7b4843bd.jpg" alt="Spring Top Detail View">
+                        </div>
+                        <div class="product-info">
+                            <span class="product-title">Women's Polka Dot Camisole, Korean Style Solid Color Undershirt Summer</span>
+                            <span class="product-price">₱190</span>
+                        </div>
+                    </a>
+
+                    <a href="https://onelink.shein.com/5/5o35xwfqdr1s" class="product-card" target="_blank" rel="noopener noreferrer">
+                        <div class="slider-container">
+                            <img src="b311157b-3ea2-4692-b885-1b9d45b1df88.jpg" alt="Tank Top Front View">
+                            <img src="97ecdca0-f789-4077-b601-55dac1a4528c.jpg" alt="Tank Top Detail View">
+                        </div>
+                        <div class="product-info">
+                            <span class="product-title">Women's Solid Color Round Neck Slim Fit Casual Sleeveless T-Shirt</span>
+                            <span class="product-price">₱185</span>
+                        </div>
+                    </a>
+
+                    <a href="https://onelink.shein.com/5/5o36pivas26l" class="product-card" target="_blank" rel="noopener noreferrer">
+                        <div class="slider-container">
+                            <img src="71f1a386-9a02-4773-b5b9-4b0ef129eceb.jpg" alt="Top Front View">
+                            <img src="fa0e2f8b-e7c5-4443-bce2-e1095908a118.jpg" alt="Top Detail View">
+                        </div>
+                        <div class="product-info">
+                            <span class="product-title">INAWLY Solva Women Fashionable Summer Camisole Top</span>
+                            <span class="product-price">₱156</span>
+                        </div>
+                    </a>
+			<a href="https://onelink.shein.com/5/5o3hlo9fq23z" class="product-card" target="_blank" rel="noopener noreferrer">
+   			 <div class="slider-container">
+       			 <img src="8ea36680-6f82-4a5b-a670-fadc4ab10e27.jpg" alt="Front View">
+       			 <img src="72f215e2-23ff-4aa0-b831-9c5a98b1eb62.jpg" alt="Detail View">
+    			</div>
+   			 <div class="product-info">
+       			 <span class="product-title">SHEIN WYWH 2pcs Neck-Tied Floral Print Drawstring Ruched Backless Tank Tops For Women, Summer Suitable For Going Out</span>
+       			 <span class="product-price">₱281</span>
+    			</div>
+			</a>
+				<a href="https://onelink.shein.com/5/5o3ix6x8pkht" class="product-card" target="_blank" rel="noopener noreferrer">
+   			 <div class="slider-container">
+       			 <img src="a3003509-ef95-4793-b3eb-38657062f3f9.jpg" alt="Front View">
+       			 <img src="8690c020-98e3-425f-9e55-a6063ec775b6.jpg" alt="Detail View">
+    			</div>
+   			 <div class="product-info">
+       			 <span class="product-title">Adidas CTT 3.1 SOFT Men's Sports Jacket Outerwear KR0295</span>
+       			 <span class="product-price">₱15,806</span>
+    			</div>
+			</a>
+				<a href="https://onelink.shein.com/5/5o3k1f5xduen" class="product-card" target="_blank" rel="noopener noreferrer">
+   			 <div class="slider-container">
+       			 <img src="0e089952-70e8-4ed3-a186-14c2559a9d51.jpg" alt="Front View">
+       			 <img src="0c2caba3-2858-4eb9-8d8b-7e5c546480ee.jpg" alt="Detail View">
+    			</div>
+   			 <div class="product-info">
+       			 <span class="product-title">Solid Color Short Round Neck Asymmetrical Button Accessory Design Fashion Sleeveless Sweater Vest, Versatile Knit Waistcoat Summer</span>
+       			 <span class="product-price">₱544</span>
+    			</div>
+			</a>
+
+                    </div>
+            </div>
+            <div class="links">
+                <div class="link-btn" onclick="showMainView()">
+                    <div class="link-info">
+                        <i class="fa-solid fa-arrow-left brand-icon"></i>
+                        <span>Back to Main Menu</span>
+                    </div>
+                    <div class="arrow">&larr;</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-section">
+            <div class="social-icons">
+                <a href="https://www.instagram.com/trenderafindsph/" class="social-icon" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.tiktok.com/@user609067721" class="social-icon" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                <a href="https://mail.google.com/mail/u/2/#inbox?compose=GTvVlcSMSqcsrHVmLjKTxZjsxJQJwrMDWPSDPxrGrcvMTMmjRKKLVqgdqpnrgVFlkdwbLrVmcwPDr" class="social-icon" aria-label="Email"><i class="fa-regular fa-envelope"></i></a>
+            </div>
+            <footer>
+                &copy; 2026 Trendéra. All Rights Reserved.
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        function showSheinView() {
+            document.getElementById('main-view').classList.remove('active');
+            document.getElementById('shein-view').classList.add('active');
+        }
+
+        function showMainView() {
+            document.getElementById('shein-view').classList.remove('active');
+            document.getElementById('main-view').classList.add('active');
+        }
+    </script>
+</body>
+</html>
